@@ -28,10 +28,21 @@ export default function CustomerForm() {
       setIsRecording(false);
     };
 
-    recognition.onerror = () => {
-      alert("לא הצלחנו לקלוט את ההקלטה. נסי שוב.");
-      setIsRecording(false);
-    };
+  recognition.onerror = (event) => {
+  console.log("Speech error:", event.error);
+
+  if (event.error === "not-allowed") {
+    alert("צריך לאשר גישה למיקרופון בדפדפן.");
+  } else if (event.error === "no-speech") {
+    alert("לא נקלט דיבור. נסי לדבר קרוב יותר למיקרופון.");
+  } else if (event.error === "network") {
+    alert("בעיה בחיבור לזיהוי הקולי. נסי לפתוח ב-Safari או Chrome.");
+  } else {
+    alert("שגיאת הקלטה: " + event.error);
+  }
+
+  setIsRecording(false);
+};
 
     recognition.onend = () => {
       setIsRecording(false);

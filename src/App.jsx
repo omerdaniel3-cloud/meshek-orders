@@ -6,9 +6,10 @@ export default function App() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const [isAdmin, setIsAdmin] = useState(
-    window.location.pathname === "/admin"
-  );
+const [isAdmin, setIsAdmin] = useState(
+  localStorage.getItem("isAdmin") === "true" ||
+  window.location.pathname === "/admin"
+);
 
   const [showLogin, setShowLogin] = useState(false); 
 
@@ -17,11 +18,13 @@ export default function App() {
     username.trim().toLowerCase() === "paza" &&
     password.trim() === "123"
   ) {
+    localStorage.setItem("isAdmin", "true");
     setIsAdmin(true);
     window.history.pushState({}, "", "/admin");
   } else {
     alert("שם משתמש או סיסמה שגויים");
   }
+
 }
 
   if (isAdmin) {

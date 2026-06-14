@@ -92,8 +92,9 @@ const pageWrapper = {
 
 const containerStyle = {
   display: "flex",
-  gap: 10,
-  alignItems: "flex-start",
+  flexDirection: "column",
+  gap: 12,
+  alignItems: "center",
   justifyContent: "center",
   width: "100%",
 };

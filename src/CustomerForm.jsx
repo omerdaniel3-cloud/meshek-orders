@@ -74,10 +74,10 @@ export default function CustomerForm() {
   return (
     <div dir="rtl" style={pageStyle}>
       <img
-        src="/logo.png"
-        alt="לוגו משק דניאל"
-        style={{ width: 500, marginBottom: 10 }}
-      />
+  src="/logo.png"
+  alt="לוגו משק דניאל"
+  style={logoStyle}
+/>
 
       <div style={cardStyle}>
         <h1 style={titleStyle}>טופס הזמנה</h1>
@@ -119,17 +119,29 @@ const pageStyle = {
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
-  paddingTop: 0,
+  paddingTop: 10,
+  paddingLeft: 10,
+  paddingRight: 10,
   fontFamily: "Arial",
+  boxSizing: "border-box",
+  overflowX: "hidden",
+};;
+
+const logoStyle = {
+  width: "85vw",
+  maxWidth: 280,
+  height: "auto",
+  marginBottom: 10,
 };
 
 const cardStyle = {
-  width: "100%",
-  maxWidth: 560,
+  width: "90vw",
+  maxWidth: 420,
   background: "rgba(255,255,255,0.92)",
-  padding: 32,
+  padding: 22,
   borderRadius: 18,
-  boxShadow: "0 8px 30px rgba(0,0,0,0.2)",
+  boxShadow: "0 8px 30px rgba(0,0,0,0.12)",
+  boxSizing: "border-box",
 };
 
 const titleStyle = {

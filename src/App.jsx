@@ -83,13 +83,19 @@ export default function App() {
 const pageWrapper = {
   display: "flex",
   justifyContent: "center",
-  marginTop: 40,
+  width: "100%",
+  marginTop: 0,
+  padding: 0,
+  boxSizing: "border-box",
+  overflowX: "hidden",
 };
 
 const containerStyle = {
   display: "flex",
-  gap: 30,
+  gap: 10,
   alignItems: "flex-start",
+  justifyContent: "center",
+  width: "100%",
 };
 
 const loginBoxStyle = {

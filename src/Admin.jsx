@@ -44,9 +44,33 @@ export default function Admin() {
   const [orders, setOrders] = useState([]);
   const [statuses, setStatuses] = useState({});
 
-  useEffect(() => {
+useEffect(() => {
+  fetchOrders();
+
+  const channel = supabase
+    .channel("orders-changes")
+    .on(
+      "postgres_changes",
+      {
+        event: "*",
+        schema: "public",
+        table: "orders",
+      },
+      () => {
+        fetchOrders();
+      }
+    )
+    .subscribe();
+
+  const interval = setInterval(() => {
     fetchOrders();
-  }, []);
+  }, 5000);
+
+  return () => {
+    supabase.removeChannel(channel);
+    clearInterval(interval);
+  };
+}, []);
 
   async function fetchOrders() {
     const { data, error } = await supabase
@@ -100,38 +124,32 @@ async function deleteOrder(orderId) {
     alert("שגיאה במחיקה");
     return;
   }
-function printOrder(order) {
-  const printWindow = window.open("", "_blank");
 
-  printWindow.document.write(`
-    <html dir="rtl">
-      <head>
-        <title>הזמנה</title>
-        <style>
-          body { font-family: Arial; padding: 30px; direction: rtl; }
-          h1 { color: #2f4f35; }
-          .item { padding: 8px 0; border-bottom: 1px solid #ddd; }
-        </style>
-      </head>
-      <body>
-        <h1>הזמנה - משק דניאל</h1>
-        <p><strong>שם:</strong> ${order.name}</p>
-        <p><strong>טלפון:</strong> ${order.phone}</p>
-        <p><strong>כתובת:</strong> ${order.address}</p>
-        <p><strong>תאריך:</strong> ${new Date(order.created_at).toLocaleString("he-IL")}</p>
-        <h2>פרחים</h2>
-        ${(order.order_text || "")
-          .split("\n")
-          .map((line) => `<div class="item">${line}</div>`)
-          .join("")}
-      </body>
-    </html>
-  `);
-
-  printWindow.document.close();
-  printWindow.print();
-}
   setOrders((prev) => prev.filter((o) => o.id !== orderId));
+}
+
+function printOrder(order) {
+  const printContent = `
+    <div dir="rtl" style="font-family: Arial; padding: 30px;">
+      <h1>הזמנה - משק דניאל</h1>
+      <p><strong>שם:</strong> ${order.name}</p>
+      <p><strong>טלפון:</strong> ${order.phone}</p>
+      <p><strong>כתובת:</strong> ${order.address}</p>
+      <p><strong>תאריך:</strong> ${new Date(order.created_at).toLocaleString("he-IL")}</p>
+      <h2>פרחים</h2>
+      ${(order.order_text || "")
+        .split("\n")
+        .map((line) => `<div style="padding:8px 0;border-bottom:1px solid #ddd;">${line}</div>`)
+        .join("")}
+    </div>
+  `;
+
+  const originalContent = document.body.innerHTML;
+
+  document.body.innerHTML = printContent;
+  window.print();
+  document.body.innerHTML = originalContent;
+  window.location.reload();
 }
   return (
     <div dir="rtl" style={pageStyle}>
@@ -274,7 +292,6 @@ const printButtonStyle = {
   cursor: "pointer",
   fontSize: 14,
 };
-
 const deleteButtonStyle = {
   position: "absolute",
   top: 10,

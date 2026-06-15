@@ -27,9 +27,22 @@ const [isAdmin, setIsAdmin] = useState(
 
 }
 
-  if (isAdmin) {
-    return <Admin />;
-  }
+function logout() {
+  localStorage.removeItem("isAdmin");
+  setIsAdmin(false);
+  window.history.pushState({}, "", "/");
+}
+
+if (isAdmin) {
+  return (
+    <>
+      <button onClick={logout} style={logoutButtonStyle}>
+        📝 טופס הזמנה
+      </button>
+      <Admin />
+    </>
+  );
+}
 
   return (
     <div dir="rtl" style={pageWrapper}>
@@ -147,4 +160,17 @@ const closeButtonStyle = {
   background: "white",
   cursor: "pointer",
   marginTop: 6,
+};
+const logoutButtonStyle = {
+  position: "fixed",
+  top: 12,
+  left: 12,
+  zIndex: 999,
+  padding: "10px 14px",
+  borderRadius: 10,
+  border: "none",
+  background: "#2f6f3e",
+  color: "white",
+  fontWeight: "bold",
+  cursor: "pointer",
 };

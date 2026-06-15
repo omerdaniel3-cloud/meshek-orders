@@ -52,12 +52,20 @@ export default function CustomerForm() {
   async function sendOrder(event) {
     event.preventDefault();
 
-    const formData = {
-      fullName: event.target[0].value,
-      phone: event.target[1].value,
-      address: event.target[2].value,
-      orderText,
-    };
+    const fullName = event.target[0].value.trim();
+const phone = event.target[1].value.trim();
+const address = event.target[2].value.trim();
+
+if (!fullName || !phone || !address || !orderText.trim()) {
+  alert("חובה למלא שם, טלפון, כתובת והזמנה");
+  return;
+}
+  const formData = {
+  fullName,
+  phone,
+  address,
+  orderText: orderText.trim(),
+};
 
     await supabase.from("orders").insert([
       {

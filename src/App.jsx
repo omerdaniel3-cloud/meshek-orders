@@ -37,8 +37,9 @@ if (isAdmin) {
   return (
     <>
       <button onClick={logout} style={logoutButtonStyle}>
-        📝 טופס הזמנה
+        📋
       </button>
+
       <Admin />
     </>
   );
@@ -166,11 +167,8 @@ const logoutButtonStyle = {
   top: 12,
   left: 12,
   zIndex: 999,
-  padding: "10px 14px",
-  borderRadius: 10,
+  background: "transparent",
   border: "none",
-  background: "#2f6f3e",
-  color: "white",
-  fontWeight: "bold",
   cursor: "pointer",
+  fontSize: 22,
 };

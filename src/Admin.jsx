@@ -124,28 +124,68 @@ async function deleteOrder(orderId) {
 }
 
 function printOrder(order) {
-  const printContent = `
-    <div dir="rtl" style="font-family: Arial; padding: 30px;">
-      <h1>הזמנה - משק דניאל</h1>
-      <p><strong>שם:</strong> ${order.name}</p>
-      <p><strong>טלפון:</strong> ${order.phone}</p>
-      <p><strong>כתובת:</strong> ${order.address}</p>
-      <p><strong>תאריך:</strong> ${new Date(order.created_at).toLocaleString("he-IL")}</p>
-      <h2>פרחים</h2>
-      ${(order.order_text || "")
-        .split("\n")
-        .map((line) => `<div style="padding:8px 0;border-bottom:1px solid #ddd;">${line}</div>`)
-        .join("")}
-    </div>
+  const html = `
+    <html dir="rtl">
+      <head>
+        <title>הזמנה</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <style>
+          body {
+            font-family: Arial;
+            padding: 20px;
+            direction: rtl;
+          }
+
+          h1 {
+            color: #2f6f3e;
+          }
+
+          .item {
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+          }
+
+          .print-btn {
+            margin-top: 20px;
+            padding: 12px 20px;
+            background: #2f6f3e;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+          }
+        </style>
+      </head>
+
+      <body>
+        <h1>הזמנה - משק דניאל</h1>
+
+        <p><strong>שם:</strong> ${order.name}</p>
+        <p><strong>טלפון:</strong> ${order.phone}</p>
+        <p><strong>כתובת:</strong> ${order.address}</p>
+        <p><strong>תאריך:</strong> ${new Date(order.created_at).toLocaleString("he-IL")}</p>
+
+        <h2>פרחים</h2>
+
+        ${(order.order_text || "")
+          .split("\n")
+         .map((line) => `<div class="item">${translateText(line)}</div>`)
+          .join("")}
+
+        <button class="print-btn" onclick="window.print()">
+          🖨 הדפס
+        </button>
+      </body>
+    </html>
   `;
 
-  const originalContent = document.body.innerHTML;
+  const newWindow = window.open("", "_blank");
 
-  document.body.innerHTML = printContent;
-  window.print();
-  document.body.innerHTML = originalContent;
-  window.location.reload();
+  newWindow.document.write(html);
+  newWindow.document.close();
 }
+
   return (
     <div dir="rtl" style={pageStyle}>
       <h1 style={mainTitle}>ניהול הזמנות</h1>
@@ -278,15 +318,12 @@ const printButtonStyle = {
   position: "absolute",
   top: 10,
   left: 48,
-  background: "white",
-  color: "#2f6f3e",
-  border: "2px solid #2f6f3e",
-  borderRadius: "50%",
-  width: 30,
-  height: 30,
+  background: "transparent",
+  border: "none",
   cursor: "pointer",
-  fontSize: 14,
+  fontSize: 22,
 };
+
 const deleteButtonStyle = {
   position: "absolute",
   top: 10,

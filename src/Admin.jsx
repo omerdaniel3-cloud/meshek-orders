@@ -47,28 +47,23 @@ export default function Admin() {
 useEffect(() => {
   fetchOrders();
 
-  const channel = supabase
-    .channel("orders-changes")
-    .on(
-      "postgres_changes",
-      {
-        event: "*",
-        schema: "public",
-        table: "orders",
-      },
-      () => {
-        fetchOrders();
-      }
-    )
-    .subscribe();
-
   const interval = setInterval(() => {
     fetchOrders();
-  }, 5000);
+  }, 3000);
+
+  function refreshWhenBack() {
+    fetchOrders();
+  }
+
+  window.addEventListener("focus", refreshWhenBack);
+  document.addEventListener("visibilitychange", refreshWhenBack);
+  window.addEventListener("touchstart", refreshWhenBack);
 
   return () => {
-    supabase.removeChannel(channel);
     clearInterval(interval);
+    window.removeEventListener("focus", refreshWhenBack);
+    document.removeEventListener("visibilitychange", refreshWhenBack);
+    window.removeEventListener("touchstart", refreshWhenBack);
   };
 }, []);
 

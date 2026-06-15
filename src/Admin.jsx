@@ -100,7 +100,37 @@ async function deleteOrder(orderId) {
     alert("שגיאה במחיקה");
     return;
   }
+function printOrder(order) {
+  const printWindow = window.open("", "_blank");
 
+  printWindow.document.write(`
+    <html dir="rtl">
+      <head>
+        <title>הזמנה</title>
+        <style>
+          body { font-family: Arial; padding: 30px; direction: rtl; }
+          h1 { color: #2f4f35; }
+          .item { padding: 8px 0; border-bottom: 1px solid #ddd; }
+        </style>
+      </head>
+      <body>
+        <h1>הזמנה - משק דניאל</h1>
+        <p><strong>שם:</strong> ${order.name}</p>
+        <p><strong>טלפון:</strong> ${order.phone}</p>
+        <p><strong>כתובת:</strong> ${order.address}</p>
+        <p><strong>תאריך:</strong> ${new Date(order.created_at).toLocaleString("he-IL")}</p>
+        <h2>פרחים</h2>
+        ${(order.order_text || "")
+          .split("\n")
+          .map((line) => `<div class="item">${line}</div>`)
+          .join("")}
+      </body>
+    </html>
+  `);
+
+  printWindow.document.close();
+  printWindow.print();
+}
   setOrders((prev) => prev.filter((o) => o.id !== orderId));
 }
   return (
@@ -122,6 +152,12 @@ async function deleteOrder(orderId) {
   ✕
 </button>
 
+<button
+  onClick={() => printOrder(order)}
+  style={printButtonStyle}
+>
+  🖨
+</button>
           <p>
           <strong>{translateText(order.name)}</strong>
           </p>
@@ -223,6 +259,20 @@ const flowerRowStyle = {
   marginTop: 10,
   border: "1px solid #eee",
   borderRadius: 12,
+};
+
+const printButtonStyle = {
+  position: "absolute",
+  top: 10,
+  left: 48,
+  background: "white",
+  color: "#2f6f3e",
+  border: "2px solid #2f6f3e",
+  borderRadius: "50%",
+  width: 30,
+  height: 30,
+  cursor: "pointer",
+  fontSize: 14,
 };
 
 const deleteButtonStyle = {
